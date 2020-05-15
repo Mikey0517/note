@@ -1,0 +1,1 @@
+const login = async ctx => {	ctx.body = {		msg: 'success'	}}module.exports = {	login};

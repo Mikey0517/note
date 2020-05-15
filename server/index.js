@@ -1,0 +1,1 @@
+require( '@babel/polyfill' )require( '@babel/register' )( {	ignore: [ /node_modules/, /dist/ ],	presets: [ "@babel/preset-env", "@babel/preset-react" ],	extensions: [ ".jsx", ".js" ],} )require( `./${ process.env.NODE_ENV === 'development' ? 'dev-server' : 'prod-server' }` );

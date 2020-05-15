@@ -1,0 +1,1 @@
+import React, { Component } from 'react';import DefaultLayout from "./Layout/defaultLayout";import './assets/css/common.css';class App extends Component {	render () {		return (			<div>				<DefaultLayout />			</div>		)	}}export default App;

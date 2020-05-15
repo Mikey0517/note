@@ -1,0 +1,1 @@
+import React from "react";import Router from 'koa-router';import koaBody from 'koa-body';import { login } from './controller'const prefix = '/api';const getRouter = () => {	const router = new Router();	router.post( `${ prefix }/login`, koaBody(), login.login );	return router;};module.exports = getRouter();
