@@ -1,0 +1,1 @@
+import React, { Component } from 'react';class MineSweeping extends Component {	render () {		return 1;	}}export default MineSweeping;

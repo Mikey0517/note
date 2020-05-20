@@ -1,0 +1,1 @@
+import React, { Component } from 'react';class Backgammon extends Component {	render () {		return 2;	}}export default Backgammon;

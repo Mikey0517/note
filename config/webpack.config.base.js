@@ -2,6 +2,7 @@ const webpack = require( 'webpack' );
 const path = require( 'path' );
 const utils = require( './utils' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 
 const config = mode => {
 	return {
@@ -10,7 +11,7 @@ const config = mode => {
 			app: [
 				path.join( __dirname, '../src/index.js' )
 			],
-			vendors: [ 'react', 'react-dom', 'react-loadable' ],
+			vendors: [ 'react', 'react-dom', 'react-router-dom', 'react-loadable' ],
 		},
 		output: {
 			path: path.join( __dirname, '../dist/' ),
@@ -62,10 +63,23 @@ const config = mode => {
 			new webpack.DefinePlugin( {
 				'process.env.NODE_ENV': JSON.stringify( mode ),
 			} ),
+			new HtmlWebpackPlugin( {
+				filename: path.resolve( __dirname, '../dist/index.html' ),
+				template: 'index.html',
+				inject: true,
+				minify: {
+					removeComments: true,
+					collapseWhitespace: true,
+					removeAttributeQuotes: true
+				},
+				chunksSortMode: 'auto',
+				chunks: [ 'commons', 'manifest', 'antdVenodr', 'async-commons', 'vendors', 'app' ]
+			} ),
 		],
 		optimization: {
+			runtimeChunk: true,
 			splitChunks: {
-				chunks: 'async',
+				chunks: 'all',
 				minSize: 30000,
 				maxSize: 0,
 				minChunks: 1,
@@ -74,20 +88,29 @@ const config = mode => {
 				automaticNameDelimiter: '~',
 				name: true,
 				cacheGroups: {
-					reactBase: {
-						name: 'react-base',
-						test: module => {
-							return /react|prop-types/.test( module.context );
-						},
-						chunks: 'initial',
-						priority: 10,
+					vendors: { // 项目基本框架等
+						name: 'vendors',
+						test: /[\\/]react|react-dom|react-router-dom|react-loadable[\\/]/,
+						chunks: 'all',
+						priority: 100
 					},
-					common: {
-						test: /[\\/]node_modules[\\/]/,
-						name: 'common',
-						chunks: 'initial',
-						priority: 2,
+					antdVenodr: { // 异步加载antd包
+						test: /(antd)/,
+						priority: 100,
+						name: 'antdVenodr',
+						chunks: 'async'
+					},
+					'async-commons': {  // 异步加载公共包、组件等
+						chunks: 'async',
 						minChunks: 2,
+						name: 'async-commons',
+						priority: 90,
+					},
+					commons: { // 其他同步加载公共包
+						chunks: 'all',
+						minChunks: 2,
+						name: 'commons',
+						priority: 80,
 					},
 				}
 			},
