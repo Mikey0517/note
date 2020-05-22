@@ -1,1 +1,1 @@
-import React from 'react';import ReactDom from 'react-dom';import App from './app.jsx';ReactDom.render(	<App/>,	document.querySelector( '#root' ));
+import React from 'react';import ReactDom from 'react-dom';import Loadable from 'react-loadable';import App from './app.jsx';const render = () => {	Loadable.preloadReady().then( () => {		ReactDom[ process.env.NODE_ENV === 'production' ? 'hydrate' : 'render' ](			<App/>,			document.querySelector( '#root' )		);	} );}window.main = () => {	render();};if ( process.env.NODE_ENV !== 'production' ) {	render();}

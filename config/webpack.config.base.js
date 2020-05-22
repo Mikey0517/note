@@ -3,6 +3,7 @@ const path = require( 'path' );
 const utils = require( './utils' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 const config = mode => {
 	return {
@@ -36,9 +37,50 @@ const config = mode => {
 									"libraryDirectory": "lib",
 									"style": true // `style: true` 会加载 less 文件
 								}
-							]
+							],
 						]
 					}
+				},
+				{
+					test: /\.css$/,
+					exclude: /node_modules/,
+					include: path.join( __dirname, '../src' ),
+					use: [
+						MiniCssExtractPlugin.loader,
+						"css-loader",
+						{
+							loader: "postcss-loader",
+							options: {
+								config: {
+									path: "./config/postcss.config.js" // 写到目录即可，文件名强制要求是postcss.config.js
+								}
+							}
+						},
+					]
+				},
+				{
+					test: /antd.*\.less$/,
+					exclude: [ /src/ ],
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: "postcss-loader",
+							options: {
+								config: {
+									path: "./config/postcss.config.js" // 写到目录即可，文件名强制要求是postcss.config.js
+								}
+							}
+						},
+						{
+							loader: 'less-loader',
+							options: {
+								lessOptions: {
+									javascriptEnabled: true
+								}
+							}
+						},
+					]
 				},
 				{
 					test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -63,7 +105,12 @@ const config = mode => {
 			new webpack.DefinePlugin( {
 				'process.env.NODE_ENV': JSON.stringify( mode ),
 			} ),
+			new MiniCssExtractPlugin( {
+				filename: utils.assetsPath( 'css/[name].[contenthash].css' ),
+				chunkFilename: utils.assetsPath( 'css/[name].[contenthash].css' ),
+			} ),
 			new HtmlWebpackPlugin( {
+				title: "Note",
 				filename: path.resolve( __dirname, '../dist/index.html' ),
 				template: 'index.html',
 				inject: true,
