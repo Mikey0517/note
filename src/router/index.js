@@ -16,7 +16,7 @@ const router = [
 				path: '/',
 				exact: true,
 				component: Loadable( {
-					loader: () => import( '../page/mineSweeping' ),
+					loader: () => import( '../page/backgammon' ),
 					loading: Loading
 				} ),
 			},

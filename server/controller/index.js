@@ -1,1 +1,1 @@
-import login from './login';module.exports = {	login}
+import login from './login';import WebSocketController from './WebSocketController';module.exports = {	login,	WebSocketController}
