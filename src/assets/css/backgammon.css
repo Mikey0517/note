@@ -1,0 +1,111 @@
+.backgammon {
+    border: 2px solid #000000;
+    width: 100%;
+    height: 100%;
+    background: #F6CB62
+}
+
+.backgammon>div {
+    display: flex;
+    width: 100%;
+}
+
+.backgammon .backgammon-container {
+    margin: 30px;
+    flex-shrink: 0;
+}
+
+.backgammon .backgammon-row {
+    line-height: 0;
+}
+
+.backgammon .backgammon-row .backgammon-col {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.backgammon .backgammon-row .backgammon-col>div {
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50% );
+    z-index: 1;
+}
+
+.backgammon .backgammon-row .backgammon-col .backgammon-anchor {
+    width: 7px;
+    height: 7px;
+    background: #000000;
+}
+
+.backgammon .backgammon-row .backgammon-col .backgammon-white {
+    width: 28px;
+    height: 28px;
+    background: #FFFFFF;
+    box-shadow: 1px 1px gray;
+}
+
+.backgammon .backgammon-row .backgammon-col .backgammon-black {
+    width: 28px;
+    height: 28px;
+    background: #000000;
+    box-shadow: 1px 1px gray;
+}
+
+.backgammon .backgammon-row .backgammon-col:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: #000000;
+    top: 50%;
+    transform: translateY( -50% );
+}
+
+.backgammon .backgammon-row .backgammon-col:after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background: #000000;
+    left: 50%;
+    transform: translateX( -50% );
+}
+
+.backgammon .backgammon-row .backgammon-col:first-of-type:before {
+    width: 50%;
+    left: 50%;
+}
+
+.backgammon .backgammon-row .backgammon-col:last-of-type:before {
+    width: 50%;
+}
+
+.backgammon .backgammon-row:first-of-type .backgammon-col:after {
+    height: 50%;
+    top: 50%;
+}
+
+.backgammon .backgammon-row:last-of-type .backgammon-col:after {
+    height: 50%;
+}
+
+.backgammon .backgammon-operating {
+    width: 100%;
+    margin: 30px;
+}
+
+.backgammon .backgammon-operating .title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.backgammon .backgammon-operating .backgammon-label {
+    width: 150px;
+    text-align: right;
+}
