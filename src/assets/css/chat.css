@@ -1,0 +1,1 @@
+.chat {	display: flex;	flex-direction: column;	height: 100%;}.chat .chat-container {	flex-grow: 1;	padding: 15px;	border: 1px solid #d9d9d9;	border-bottom: none;	overflow: auto;	background: #F5F5F5;}

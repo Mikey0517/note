@@ -15,6 +15,10 @@
     flex-shrink: 0;
 }
 
+.backgammon .backgammon-container.no-select {
+    cursor: not-allowed;
+}
+
 .backgammon .backgammon-row {
     line-height: 0;
 }
@@ -95,8 +99,14 @@
 }
 
 .backgammon .backgammon-operating {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     margin: 30px;
+}
+
+.backgammon .backgammon-operating>div {
+    margin-bottom: 8px;
 }
 
 .backgammon .backgammon-operating .title {
