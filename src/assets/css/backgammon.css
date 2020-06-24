@@ -11,7 +11,7 @@
 }
 
 .backgammon .backgammon-container {
-    margin: 30px;
+    margin: 15px 0 15px 15px;
     flex-shrink: 0;
 }
 
@@ -29,6 +29,11 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
+}
+
+.backgammon.no-pc .backgammon-row .backgammon-col {
+    width: 26px;
+    height: 26px;
 }
 
 .backgammon .backgammon-row .backgammon-col>div {
@@ -53,11 +58,21 @@
     box-shadow: 1px 1px gray;
 }
 
+.backgammon.no-pc .backgammon-row .backgammon-col .backgammon-white {
+    width: 25px;
+    height: 25px;
+}
+
 .backgammon .backgammon-row .backgammon-col .backgammon-black {
     width: 28px;
     height: 28px;
     background: #000000;
     box-shadow: 1px 1px gray;
+}
+
+.backgammon.no-pc .backgammon-row .backgammon-col .backgammon-black {
+    width: 25px;
+    height: 25px;
 }
 
 .backgammon .backgammon-row .backgammon-col:before {
