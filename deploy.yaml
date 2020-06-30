@@ -1,7 +1,7 @@
 # deploy.yaml
 apps:
   - script: ./server/index.js       # 入口文件
-    name: 'note'              # 程序名称
+    name: note              # 程序名称
     env:                     # 环境变量
       COMMON_VARIABLE: true
     env_production:
