@@ -120,7 +120,7 @@ const config = mode => {
 					removeAttributeQuotes: true
 				},
 				chunksSortMode: 'auto',
-				chunks: [ 'commons', 'manifest', 'antdVenodr', 'async-commons', 'vendors', 'app' ]
+				chunks: [ 'commons', 'manifest', 'antd-vendor', 'async-commons', 'vendors', 'app' ]
 			} ),
 		],
 		optimization: {
@@ -141,10 +141,10 @@ const config = mode => {
 						chunks: 'all',
 						priority: 100
 					},
-					antdVenodr: { // 异步加载antd包
+					'antd-vendor': { // 异步加载antd包
 						test: /(antd)/,
 						priority: 100,
-						name: 'antdVenodr',
+						name: 'antd-vendor',
 						chunks: 'async'
 					},
 					'async-commons': {  // 异步加载公共包、组件等
