@@ -10,7 +10,7 @@ apps:
 deploy:                     # 部署脚本
   production:               # 生产环境
     user: root            # 服务器的用户名
-    host: [ 23.105.200.139:29299 ]     # 服务器的ip地址
+    host: [ 23.105.200.139 ]     # 服务器的ip地址
     ref: origin/master      # 要拉取的git分支
     ssh_options: StrictHostKeyChecking=no # SSH 公钥检查
     repo: https://github.com/Mikey0517/note.git # 远程仓库地址
