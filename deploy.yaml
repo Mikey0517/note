@@ -17,6 +17,6 @@ deploy:                     # 部署脚本
     repo: https://github.com/Mikey0517/note.git # 远程仓库地址
     path: /usr/project           # 拉取到服务器某个目录下
     pre-deploy: git fetch --all # 部署前执行
-    post-deploy: npm install && pm2 reload deploy.yaml --env production # 部署后执行
+    post-deploy: npm install && npm run build && pm2 reload deploy.yaml --env production # 部署后执行
     env:
       NODE_ENV: production
