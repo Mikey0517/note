@@ -1,169 +1,121 @@
 const webpack = require( 'webpack' );
 const path = require( 'path' );
-const utils = require( './utils' );
-const ManifestPlugin = require( 'webpack-manifest-plugin' );
+const LoadablePlugin = require( '@loadable/webpack-plugin' );
+const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const ManifestPlugin = require( 'webpack-manifest-plugin' );
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 
-const config = mode => {
-	return {
-		mode: mode,
-		entry: {
-			app: [
-				path.join( __dirname, '../src/index.js' )
-			],
-			vendors: [ 'react', 'react-dom', 'react-router-dom', 'react-loadable' ],
-		},
-		output: {
-			path: path.join( __dirname, '../dist/' ),
-			publicPath: "/",
-			filename: "[name].js"
-		},
-		resolve: { extensions: [ '.js', '.jsx' ] },
-		module: {
-			rules: [
-				{
-					test: /\.(js|jsx)$/,
-					exclude: /node_modules/,
-					include: path.join( __dirname, '../src' ),
-					loader: 'babel-loader',
-					options: {
-						presets: [ "@babel/preset-env", "@babel/preset-react" ],
-						plugins: [
-							[
-								"import",
-								{
-									"libraryName": "antd",
-									"libraryDirectory": "lib",
-									"style": true // `style: true` 会加载 less 文件
-								}
-							],
-						]
-					}
-				},
-				{
-					test: /\.css$/,
-					exclude: /node_modules/,
-					include: path.join( __dirname, '../src' ),
-					use: [
-						MiniCssExtractPlugin.loader,
-						"css-loader",
-						{
-							loader: "postcss-loader",
-							options: {
-								config: {
-									path: "./config/postcss.config.js" // 写到目录即可，文件名强制要求是postcss.config.js
-								}
-							}
-						},
-					]
-				},
-				{
-					test: /antd.*\.less$/,
-					exclude: [ /src/ ],
-					use: [
-						MiniCssExtractPlugin.loader,
-						'css-loader',
-						{
-							loader: "postcss-loader",
-							options: {
-								config: {
-									path: "./config/postcss.config.js" // 写到目录即可，文件名强制要求是postcss.config.js
-								}
-							}
-						},
-						{
-							loader: 'less-loader',
-							options: {
-								lessOptions: {
-									javascriptEnabled: true
-								}
-							}
-						},
-					]
-				},
-				{
-					test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-					loader: 'url-loader',
-					options: {
-						limit: 1000,
-						name: utils.assetsPath( 'image/[name].[hash:7].[ext]' )
-					}
-				},
-				{
-					test: /\.(woff2?|eot|ttf|otf|)(\?.*)?$/,
-					loader: 'url-loader',
-					options: {
-						limit: 1000,
-						name: utils.assetsPath( 'fonts/[name].[hash:7].[ext]' )
-					}
-				}
-			]
-		},
-		plugins: [
-			new ManifestPlugin(),
-			new webpack.DefinePlugin( {
-				'process.env.NODE_ENV': JSON.stringify( mode ),
-			} ),
-			new MiniCssExtractPlugin( {
-				filename: utils.assetsPath( 'css/[name].[contenthash].css' ),
-				chunkFilename: utils.assetsPath( 'css/[name].[contenthash].css' ),
-			} ),
-			new HtmlWebpackPlugin( {
-				title: "Note",
-				filename: path.resolve( __dirname, '../dist/index.html' ),
-				template: 'index.html',
-				inject: true,
-				minify: {
-					removeComments: true,
-					collapseWhitespace: true,
-					removeAttributeQuotes: true
-				},
-				chunksSortMode: 'auto',
-				chunks: [ 'commons', 'manifest', 'antd-vendor', 'async-commons', 'vendors', 'app' ]
-			} ),
-		],
-		optimization: {
-			runtimeChunk: true,
-			splitChunks: {
-				chunks: 'all',
-				minSize: 30000,
-				maxSize: 0,
-				minChunks: 1,
-				maxAsyncRequests: 5,
-				maxInitialRequests: 3,
-				automaticNameDelimiter: '~',
-				name: true,
-				cacheGroups: {
-					vendors: { // 项目基本框架等
-						name: 'vendors',
-						test: /[\\/]react|react-dom|react-router-dom|react-loadable[\\/]/,
-						chunks: 'all',
-						priority: 100
-					},
-					'antd-vendor': { // 异步加载antd包
-						test: /(antd)/,
-						priority: 100,
-						name: 'antd-vendor',
-						chunks: 'async'
-					},
-					'async-commons': {  // 异步加载公共包、组件等
-						chunks: 'async',
-						minChunks: 2,
-						name: 'async-commons',
-						priority: 90,
-					},
-					commons: { // 其他同步加载公共包
-						chunks: 'all',
-						minChunks: 2,
-						name: 'commons',
-						priority: 80,
-					},
-				}
-			},
-			noEmitOnErrors: true
-		}
-	}
+const config = require( './env' );
+const utils = require( './utils' );
+
+const DEV_MODE = config.isDevMode();
+const isHMREnabled = config.isHMREnabled();
+const isSSREnabled = config.isSSREnabled();
+const APP_BUILD_PATH = utils.APP_BUILD_PATH;
+const APP_PATH = utils.APP_PATH;
+const CONTENT_PATH = APP_PATH;
+const ENTRY_NAME = utils.ENTRY_NAME;
+
+const appIndex = path.join( APP_PATH, 'index.js' );
+
+let entry;
+if ( isHMREnabled ) {
+	entry = [ appIndex ];
+} else {
+	entry = {
+		[ ENTRY_NAME.APP ]: [ appIndex ],
+	};
 }
 
-module.exports = config;
+const webpackConfig = {
+	entry,
+	output: {
+		path: APP_BUILD_PATH,
+	},
+	resolve: {
+		...utils.getWebpackResolveConfig(),
+	},
+	module: {
+		rules: [
+			utils.getBabelLoader( DEV_MODE ),
+			utils.getImageLoader( DEV_MODE, CONTENT_PATH ),
+			utils.getMediaLoader( DEV_MODE, CONTENT_PATH ),
+		],
+	},
+	plugins: [
+		//in HMR, do not clean built files
+		...( isHMREnabled ? [] : [ new CleanWebpackPlugin( { verbose: false } ) ] ),
+		new webpack.DefinePlugin( {
+			__isBrowser__: true,
+			__HMR__: isHMREnabled,
+			__SSR__: isSSREnabled,
+			'process.env.DEV_MODE': DEV_MODE,
+			// 'process.env.prefix': JSON.stringify( prefix ),
+			// 'process.env.appPrefix': JSON.stringify( appPrefix ),
+			'process.env.NODE_ENV': JSON.stringify( config.getNodeEnv() ),
+			// 'process.env.apiPrefix': JSON.stringify(
+			// 	config.isCustomAPIPrefix() ? defaultPrefix : '',
+			// ),
+		} ),
+		new webpack.LoaderOptionsPlugin( {
+			debug: DEV_MODE,
+			minimize: !DEV_MODE,
+			options: {
+				context: CONTENT_PATH,
+			},
+		} ),
+		new HtmlWebpackPlugin( {
+			template: './views/index.html',
+			filename: isSSREnabled ? 'index-backup.html' : 'index.html',
+			inject: 'body',
+			chunksSortMode: 'none', //TODO Unhandled rejection Error: "dependency" is not a valid chunk sort mode at
+		                          // HtmlWebpackPlugin.sortEntryChunks
+			favicon: path.join( __dirname, '../src/assets/static/favicon.svg' ),
+		} ),
+		new CopyWebpackPlugin( {
+			patterns: [
+				{
+					from: utils.resolve( 'src/assets/static' ),
+					to: utils.resolve( 'dist/app/assets/static' ),
+				},
+			],
+		} ),
+		new LoadablePlugin( {
+			filename: 'loadable-stats.json',
+			writeToDisk: {
+				filename: utils.resolve( 'dist/app' ),
+			},
+		} ),
+		new ManifestPlugin( {
+			publicPath: '',
+		} ),
+	],
+}
+
+function HtmlWebpackCustomPlugin ( options ) {
+	// Configure your plugin with options...
+}
+
+HtmlWebpackCustomPlugin.prototype.apply = function ( compiler ) {
+	compiler.hooks.compilation.tap( 'InsertSSRBundleScriptsPlugin', ( compilation ) => {
+		console.log( 'The compiler is starting a new compilation...' );
+
+		compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync( 'InsertSSRBundleScriptsPlugin', ( data, cb ) => {
+			console.log( 'data: ', data.assets );
+			// console.log('chunks: ', data.assets.chunks);
+			// console.log('compilation.assets.app: ', Object.getOwnPropertyNames(compilation));
+			console.log( 'compilation.entries: ', compilation.entries.length );
+			// console.log('compilation.entries: ', compilation.entries[0].NormalModule.dependencies);
+			console.log(
+				'compilation.chunks: ',
+				compilation.chunks.length,
+				compilation.chunks,
+			);
+			// console.log('compilation.assets: ', compilation.assets);
+			cb( null, data );
+		} );
+	} );
+};
+
+module.exports = webpackConfig;

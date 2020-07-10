@@ -1,1 +1,26 @@
-import React from "react";import Router from 'koa-router';import koaBody from 'koa-body';import { login, WebSocketController } from './controller'const getRouter = () => {	const router = new Router( {		prefix: '/api'	} );	router.post( '/login', koaBody(), login.login );	router.get( '/getOnLineList', WebSocketController.getOnLineList )	return router;};module.exports = getRouter();
+import fs from "fs";
+import path from "path";
+
+const router = ( url ) => {
+	return [ '/' ].concat( recursive( url, url ) );
+}
+
+const recursive = ( rootPath, url ) => {
+	let paths = [];
+
+	const files = fs.readdirSync( url );
+	const length = files.length;
+	for ( let i = 0; i < length; i++ ) {
+		const filePath = path.join( url, files[ i ] );
+		const fileStat = fs.statSync( filePath );
+		if ( fileStat.isDirectory() ) {
+			paths = paths.concat( recursive( rootPath, filePath ) );
+		} else {
+			paths.push( filePath.split( rootPath )[ 1 ].split( path.sep ).join( '/' ).split( '.jsx' )[ 0 ] );
+		}
+	}
+
+	return paths;
+}
+
+module.exports = router;

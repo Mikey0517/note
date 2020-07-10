@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Layout, Menu } from "antd"
 import { MailOutlined } from "@ant-design/icons"
 import { menu, defaultSelectedKeys, defaultOpenKeys } from "../config/menu.config"
-import Login from "../component/login"
+import Login from "../components/Login"
 import { os } from "../common"
 
 const { Header, Footer, Sider, Content } = Layout

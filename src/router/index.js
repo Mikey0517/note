@@ -1,6 +1,7 @@
-import Loadable from 'react-loadable';
-import DefaultLayout from '../layout/defaultLayout';
-import Loading from "../component/loading";
+import React from "react";
+import loadable from '@loadable/component';
+import DefaultLayout from '../layout/DefaultLayout';
+import Loading from "../components/Loading";
 
 const router = [
 	// {
@@ -15,24 +16,31 @@ const router = [
 			{
 				path: '/',
 				exact: true,
-				component: Loadable( {
-					loader: () => import( '../page/backgammon' ),
-					loading: Loading
-				} ),
+				component: loadable(
+					() => import( '../pages/game/Backgammon' ),
+					{ fallback: <Loading />, }
+				),
 			},
 			{
 				path: '/game/mineSweeping',
-				component: Loadable( {
-					loader: () => import( '../page/mineSweeping' ),
-					loading: Loading
-				} ),
+				component: loadable(
+					() => import( '../pages/game/MineSweeping' ),
+					{ fallback: <Loading />, }
+				),
 			},
 			{
 				path: '/game/backgammon',
-				component: Loadable( {
-					loader: () => import( '../page/backgammon' ),
-					loading: Loading
-				} ),
+				component: loadable(
+					() => import( '../pages/game/Backgammon' ),
+					{ fallback: <Loading />, }
+				),
+			},
+			{
+				path: '/learn/hookLearn',
+				component: loadable(
+					() => import( '../pages/learn/HookLearn' ),
+					{ fallback: <Loading />, }
+				),
 			},
 		]
 	}

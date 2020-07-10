@@ -1,0 +1,1 @@
+import React from "react";import Router from 'koa-router';import koaBody from 'koa-body';import { login, WebSocketController } from './controller'const getApi = () => {	const api = new Router( {		prefix: '/api'	} );	api.post( '/login', koaBody(), login.login );	api.get( '/getOnLineList', WebSocketController.getOnLineList )	return api;};module.exports = getApi();
