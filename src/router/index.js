@@ -3,6 +3,8 @@ import loadable from '@loadable/component';
 import DefaultLayout from '../layout/DefaultLayout';
 import Loading from "../components/Loading";
 
+const Sub = loadable( props => import( `../pages/${ props.path }` ), { fallback: <Loading />, } )
+
 const router = [
 	// {
 	// 	path: '/login',
@@ -16,31 +18,31 @@ const router = [
 			{
 				path: '/',
 				exact: true,
-				component: loadable(
-					() => import( '../pages/game/Backgammon' ),
-					{ fallback: <Loading />, }
-				),
+				component: Sub,
+				props: {
+					path: "game/backgammon"
+				}
 			},
 			{
 				path: '/game/mineSweeping',
-				component: loadable(
-					() => import( '../pages/game/MineSweeping' ),
-					{ fallback: <Loading />, }
-				),
+				component: Sub,
+				props: {
+					path: "game/mineSweeping"
+				}
 			},
 			{
 				path: '/game/backgammon',
-				component: loadable(
-					() => import( '../pages/game/Backgammon' ),
-					{ fallback: <Loading />, }
-				),
+				component: Sub,
+				props: {
+					path: "game/backgammon"
+				}
 			},
 			{
 				path: '/learn/hookLearn',
-				component: loadable(
-					() => import( '../pages/learn/HookLearn' ),
-					{ fallback: <Loading />, }
-				),
+				component: Sub,
+				props: {
+					path: "learn/hookLearn"
+				}
 			},
 		]
 	}

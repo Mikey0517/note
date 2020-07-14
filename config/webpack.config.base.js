@@ -69,8 +69,7 @@ const webpackConfig = {
 			template: './views/index.html',
 			filename: isSSREnabled ? 'index-backup.html' : 'index.html',
 			inject: 'body',
-			chunksSortMode: 'none', //TODO Unhandled rejection Error: "dependency" is not a valid chunk sort mode at
-		                          // HtmlWebpackPlugin.sortEntryChunks
+			chunksSortMode: 'auto',
 			favicon: path.join( __dirname, '../src/assets/static/favicon.svg' ),
 		} ),
 		new CopyWebpackPlugin( {

@@ -4,7 +4,7 @@ import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ChunkExtractor } from '@loadable/server';
 import manifest from '../../dist/app/manifest.json';
-import App from "../App";
+import AppRoutes from "../AppRoutes";
 
 const SOURCE_TYPE = {
 	STYLE: {
@@ -59,7 +59,7 @@ const defaultContext = {
 
 class SSR {
 	constructor () {
-		this.statsFile = path.resolve( 'dist/loadable-stats.json' );
+		this.statsFile = path.resolve( 'dist/app/loadable-stats.json' );
 	}
 
 	render ( url, data, routerContext = {} ) {
@@ -69,12 +69,11 @@ class SSR {
 			html,
 			renderedScriptTags,
 			renderedLinkTags,
-			renderedStyleTags,
-			styleTags;
+			renderedStyleTags
 		try {
 			jsx = extractor.collectChunks(
 				<StaticRouter location={ url } context={ routerContext }>
-					<App context={ defaultContext } initialData={ data }/>
+					<AppRoutes context={ defaultContext } initialData={ data }/>
 				</StaticRouter>
 			);
 			html = ReactDOMServer.renderToString( jsx );
@@ -85,8 +84,6 @@ class SSR {
 			renderedLinkTags = extractor.getLinkTags(); // or extractor.getLinkElements();
 			// And you can even collect your style tags (if you use "mini-css-extract-plugin")
 			renderedStyleTags = extractor.getStyleTags(); // or extractor.getStyleElements();
-
-			styleTags = `${ renderedStyleTags || '' }`;
 
 			// console.log('html: ', html);
 			// console.log('renderedScriptTags: \n', renderedScriptTags);
@@ -105,7 +102,7 @@ class SSR {
 			extractor,
 			scriptTags: renderedScriptTags || '',
 			linkTags: renderedLinkTags || '',
-			styleTags: styleTags || '',
+			styleTags: renderedStyleTags || '',
 		};
 	}
 
@@ -114,7 +111,7 @@ class SSR {
 		const extractor = new ChunkExtractor( { statsFile: this.statsFile } );
 		const jsx = extractor.collectChunks(
 			<StaticRouter location={ url } context={ routerContext }>
-				<App context={ defaultContext } initialData={ data }/>
+				<AppRoutes context={ defaultContext } initialData={ data }/>
 			</StaticRouter>,
 		);
 		const htmlStream = ReactDOMServer.renderToNodeStream( jsx );
