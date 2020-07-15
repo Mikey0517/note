@@ -38,7 +38,7 @@ const webpackConfig = {
 	},
 	module: {
 		rules: [
-			utils.getBabelLoader( DEV_MODE ),
+			utils.getBabelLoader( DEV_MODE, true ),
 			utils.getImageLoader( DEV_MODE, CONTENT_PATH ),
 			utils.getMediaLoader( DEV_MODE, CONTENT_PATH ),
 		],

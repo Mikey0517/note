@@ -110,7 +110,7 @@ exports.getMediaLoader = function ( devMode, context ) {
 	};
 };
 
-exports.getBabelLoader = function ( cache ) {
+exports.getBabelLoader = function ( cache, isAntd ) {
 	return {
 		test: /\.jsx?$/,
 		exclude: /node_modules/,
@@ -119,6 +119,9 @@ exports.getBabelLoader = function ( cache ) {
 			options: {
 				configFile: "./config/babel.config.js",
 				cacheDirectory: cache,
+				caller: {
+					antd: isAntd
+				}
 			},
 		},
 	};

@@ -1,7 +1,12 @@
+function isAntd ( caller ) {
+	return Boolean( caller && caller.antd )
+}
+
 module.exports = function ( api ) {
+	const antd = api.caller( isAntd );
 	const DEV_MODE = api.env( 'development' );
 	api.cache( true );
-	return {
+	let config = {
 		presets: [
 			[
 				'@babel/preset-env',
@@ -64,15 +69,18 @@ module.exports = function ( api ) {
 			'@babel/plugin-proposal-class-properties',
 			'@babel/plugin-syntax-dynamic-import',
 			'@babel/plugin-transform-modules-commonjs',
-			'@loadable/babel-plugin',
-			[
-				"import",
-				{
-					"libraryName": "antd",
-					"libraryDirectory": "lib",
-					"style": "css" // `style: true` 会加载 less 文件
-				}
-			],
+			'@loadable/babel-plugin'
 		],
 	};
+	if ( antd ) {
+		config.plugins.push( [
+			"import",
+			{
+				"libraryName": "antd",
+				"libraryDirectory": "lib",
+				"style": "css" // `style: true` 会加载 less 文件
+			}
+		] )
+	}
+	return config;
 };

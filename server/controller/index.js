@@ -1,1 +1,1 @@
-import login from './login';import WebSocketController from './WebSocketController';module.exports = {	login,	WebSocketController}
+const login = require( "./login" );const webSocketController = require( "./webSocketController" )module.exports = {	login,	webSocketController}
