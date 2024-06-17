@@ -28,7 +28,7 @@
     "react-dom": "16.13.1",
     "react-router-dom": "5.2.0",
     "uuid": "8.1.0",
-    "ws": "7.3.0"
+    "ws": "7.5.10"
   },
   "devDependencies": {
     "@ant-design/icons": "4.1.0",
